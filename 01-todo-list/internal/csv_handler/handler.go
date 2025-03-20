@@ -14,7 +14,7 @@ type CSVHandler struct{}
 func (h *CSVHandler) WriteToCSV(filename string, tasks []model.Task) error {
 	file, err := os.Create(filename)
 	if err != nil {
-		return fmt.Errorf("Unable to create a file: %w", err)
+		return fmt.Errorf("unable to create a file: %w", err)
 	}
 	defer file.Close()
 
@@ -39,7 +39,7 @@ func (h *CSVHandler) WriteToCSV(filename string, tasks []model.Task) error {
 func (h *CSVHandler) ReadFromCSV(filename string) ([]model.Task, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to open a file: %w", err)
+		return nil, fmt.Errorf("unable to open a file: %w", err)
 	}
 	defer file.Close()
 
@@ -52,10 +52,14 @@ func (h *CSVHandler) ReadFromCSV(filename string) ([]model.Task, error) {
 		return nil, fmt.Errorf("failed to read records: %w", err)
 	}
 
-	for _, record := range records[1:] {
+	for i, record := range records {
+		if i == 0 {
+			continue
+		}
+
 		IsCompleted, err := strconv.ParseBool(record[3])
 		if err != nil {
-			return nil, fmt.Errorf("Unable to parse IsCompleted")
+			return nil, fmt.Errorf("unable to parse IsCompleted %w", err)
 		}
 
 		task := model.Task{

@@ -32,8 +32,20 @@ var addCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		var lastTodoID int64
+
+		if len(tasks) == 0 {
+			lastTodoID = 0
+		} else {
+			lastTodoID, err = strconv.ParseInt(tasks[len(tasks)-1].ID, 10, 64)
+			if err != nil {
+				fmt.Println("Unable to parse todo list id")
+				os.Exit(1)
+			}
+		}
+
 		task := model.Task{
-			ID:          strconv.FormatInt(int64(len(tasks)+1), 10),
+			ID:          strconv.FormatInt(lastTodoID+1, 10),
 			Description: description,
 			CreatedAt:   time.Now().Format(time.RFC3339),
 			IsCompleted: false,
@@ -42,7 +54,6 @@ var addCmd = &cobra.Command{
 		tasks = append(tasks, task)
 
 		csv.WriteToCSV(constants.CsvFilePath, tasks)
-
 		fmt.Printf("Task added: %s\n", description)
 	},
 }

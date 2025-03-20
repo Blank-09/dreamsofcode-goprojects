@@ -52,7 +52,12 @@ func removeItem(arr []model.Task, index int) []model.Task {
 	}
 
 	newArr := make([]model.Task, len(arr)-1)
-	copy(newArr[:index], arr[:index])
-	copy(newArr[index:], arr[index+1:])
+	copy(newArr, arr[:index]) // Copy elements before the index
+
+	// Only copy if there is something after `index`
+	if index < len(arr)-1 {
+		copy(newArr[index:], arr[index+1:]) // Copy elements after the index
+	}
+
 	return newArr
 }
